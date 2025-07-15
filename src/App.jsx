@@ -9,6 +9,9 @@ import Budgets from './pages/Budgets';
 import Expenses from './pages/Expenses';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Transactions from './pages/Transactions';
+import Reports from './pages/Reports';
+import Settings from './pages/Settings';
 
 const AppContent = () => {
   const { user } = useAuth();
@@ -39,9 +42,9 @@ const AppContent = () => {
             <Route index element={<Dashboard />} />
             <Route path="budgets" element={<Budgets />} />
             <Route path="expenses" element={<Expenses />} />
-            <Route path="transactions" element={<div className="p-6">Transactions Page (Coming Soon)</div>} />
-            <Route path="reports" element={<div className="p-6">Reports Page (Coming Soon)</div>} />
-            <Route path="settings" element={<div className="p-6">Settings Page (Coming Soon)</div>} />
+            <Route path="transactions" element={<Transactions />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
       </div>

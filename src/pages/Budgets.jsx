@@ -3,6 +3,7 @@ import { Plus, Target, TrendingUp, AlertCircle, Edit, Trash2, X } from 'lucide-r
 import { motion } from 'framer-motion';
 import { budgetService } from '../services/api.js';
 import toast from 'react-hot-toast';
+import * as XLSX from 'xlsx';
 
 const Budgets = () => {
   const [budgets, setBudgets] = useState([]);
@@ -120,19 +121,32 @@ const Budgets = () => {
           <h1 className="text-2xl font-bold text-gray-900">Budget Management</h1>
           <p className="text-gray-600">Track and manage your monthly budgets</p>
         </div>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-          onClick={() => {
-            setShowForm((v) => !v);
-            setEditId(null);
-            setForm({ name: '', category: '', amount: '', period: 'monthly' });
-          }}
-        >
-          <Plus className="h-4 w-4" />
-          <span>{editId ? 'Cancel Edit' : 'Create Budget'}</span>
-        </motion.button>
+        <div className="flex items-center space-x-3">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            onClick={() => {
+              setShowForm((v) => !v);
+              setEditId(null);
+              setForm({ name: '', category: '', amount: '', period: 'monthly' });
+            }}
+          >
+            <Plus className="h-4 w-4" />
+            <span>{editId ? 'Cancel Edit' : 'Create Budget'}</span>
+          </motion.button>
+          <button
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            onClick={() => {
+              const ws = XLSX.utils.json_to_sheet(budgets);
+              const wb = XLSX.utils.book_new();
+              XLSX.utils.book_append_sheet(wb, ws, 'Budgets');
+              XLSX.writeFile(wb, 'budgets.xlsx');
+            }}
+          >
+            Export
+          </button>
+        </div>
       </div>
 
       {showForm && (

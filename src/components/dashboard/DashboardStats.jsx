@@ -32,45 +32,37 @@ const StatCard = ({ title, value, change, changeType, icon, color }) => {
   );
 };
 
-const DashboardStats = () => {
-  const stats = [
+const DashboardStats = ({ stats }) => {
+  if (!stats) return null;
+  const statCards = [
     {
       title: 'Total Budget',
-      value: '$12,450',
-      change: '+8.2% from last month',
-      changeType: 'positive',
+      value: `$${stats.totalBudget?.toLocaleString() ?? 0}`,
       icon: <Target className="h-6 w-6 text-blue-600" />,
       color: 'bg-blue-50',
     },
     {
       title: 'Total Spent',
-      value: '$8,325',
-      change: '+12.5% from last month',
-      changeType: 'negative',
+      value: `$${stats.totalSpent?.toLocaleString() ?? 0}`,
       icon: <CreditCard className="h-6 w-6 text-red-600" />,
       color: 'bg-red-50',
     },
     {
       title: 'Available Budget',
-      value: '$4,125',
-      change: '+4.2% from last month',
-      changeType: 'positive',
+      value: `$${(stats.totalBudget - stats.totalSpent)?.toLocaleString() ?? 0}`,
       icon: <Wallet className="h-6 w-6 text-green-600" />,
       color: 'bg-green-50',
     },
     {
-      title: 'Monthly Income',
-      value: '$15,750',
-      change: '+2.8% from last month',
-      changeType: 'positive',
+      title: 'Total Income',
+      value: `$${stats.totalIncome?.toLocaleString() ?? 0}`,
       icon: <DollarSign className="h-6 w-6 text-purple-600" />,
       color: 'bg-purple-50',
     },
   ];
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {stats.map((stat, index) => (
+      {statCards.map((stat, index) => (
         <motion.div
           key={stat.title}
           initial={{ opacity: 0, y: 20 }}

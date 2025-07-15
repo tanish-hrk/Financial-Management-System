@@ -2,25 +2,31 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { motion } from 'framer-motion';
 
-const monthlyData = [
-  { month: 'Jan', budget: 5000, spent: 4200, income: 6000 },
-  { month: 'Feb', budget: 5200, spent: 4800, income: 6200 },
-  { month: 'Mar', budget: 4800, spent: 4100, income: 5800 },
-  { month: 'Apr', budget: 5500, spent: 5200, income: 6500 },
-  { month: 'May', budget: 5000, spent: 4600, income: 6000 },
-  { month: 'Jun', budget: 5300, spent: 4900, income: 6300 },
-];
+const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#eab308'];
 
-const categoryData = [
-  { name: 'Food & Dining', value: 1200, color: '#3B82F6' },
-  { name: 'Transportation', value: 800, color: '#10B981' },
-  { name: 'Shopping', value: 600, color: '#F59E0B' },
-  { name: 'Entertainment', value: 400, color: '#EF4444' },
-  { name: 'Utilities', value: 300, color: '#8B5CF6' },
-  { name: 'Healthcare', value: 250, color: '#06B6D4' },
-];
+const ExpenseChart = ({ stats }) => {
+  if (!stats) return null;
+  // Prepare monthly trend data
+  const monthlyData = [];
+  if (stats.monthlyTrend && stats.monthlyTrend.length > 0) {
+    // Group by month
+    const monthMap = {};
+    stats.monthlyTrend.forEach((item) => {
+      const key = `${item._id.month}/${item._id.year}`;
+      if (!monthMap[key]) monthMap[key] = { month: key, budget: 0, spent: 0, income: 0 };
+      if (item._id.type === 'income') monthMap[key].income = item.total;
+      if (item._id.type === 'expense') monthMap[key].spent = item.total;
+    });
+    monthlyData.push(...Object.values(monthMap));
+    // Optionally, add budget per month if available
+  }
+  // Prepare category breakdown data
+  const categoryData = (stats.categoryBreakdown || []).map((c, i) => ({
+    name: c._id,
+    value: c.spent,
+    color: COLORS[i % COLORS.length],
+  }));
 
-const ExpenseChart = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Monthly Trend Chart */}
@@ -59,7 +65,7 @@ const ExpenseChart = () => {
                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
               }}
             />
-            <Bar dataKey="budget" fill="#3B82F6" radius={[2, 2, 0, 0]} />
+            {/* <Bar dataKey="budget" fill="#3B82F6" radius={[2, 2, 0, 0]} /> */}
             <Bar dataKey="spent" fill="#EF4444" radius={[2, 2, 0, 0]} />
             <Bar dataKey="income" fill="#10B981" radius={[2, 2, 0, 0]} />
           </BarChart>
@@ -110,7 +116,7 @@ const ExpenseChart = () => {
                 ></div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-900">{category.name}</p>
-                  <p className="text-xs text-gray-500">${category.value.toLocaleString()}</p>
+                  <p className="text-xs text-gray-500">${category.value?.toLocaleString()}</p>
                 </div>
               </div>
             ))}

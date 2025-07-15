@@ -2,55 +2,8 @@ import React from 'react';
 import { ChevronRight, TrendingUp, TrendingDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const transactions = [
-  {
-    id: '1',
-    title: 'Grocery Shopping',
-    category: 'Food & Dining',
-    amount: 125.50,
-    type: 'expense',
-    date: '2024-01-15',
-    status: 'completed',
-  },
-  {
-    id: '2',
-    title: 'Salary Deposit',
-    category: 'Income',
-    amount: 5500.00,
-    type: 'income',
-    date: '2024-01-15',
-    status: 'completed',
-  },
-  {
-    id: '3',
-    title: 'Gas Station',
-    category: 'Transportation',
-    amount: 45.20,
-    type: 'expense',
-    date: '2024-01-14',
-    status: 'completed',
-  },
-  {
-    id: '4',
-    title: 'Online Shopping',
-    category: 'Shopping',
-    amount: 89.99,
-    type: 'expense',
-    date: '2024-01-14',
-    status: 'pending',
-  },
-  {
-    id: '5',
-    title: 'Freelance Project',
-    category: 'Income',
-    amount: 750.00,
-    type: 'income',
-    date: '2024-01-13',
-    status: 'completed',
-  },
-];
-
-const RecentTransactions = () => {
+const RecentTransactions = ({ transactions, onViewAll }) => {
+  if (!transactions) return null;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -62,6 +15,7 @@ const RecentTransactions = () => {
         <motion.button
           whileHover={{ x: 2 }}
           className="flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium"
+          onClick={onViewAll}
         >
           View all
           <ChevronRight className="h-4 w-4 ml-1" />
@@ -71,7 +25,7 @@ const RecentTransactions = () => {
       <div className="space-y-4">
         {transactions.map((transaction, index) => (
           <motion.div
-            key={transaction.id}
+            key={transaction._id || transaction.id}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}
@@ -99,7 +53,7 @@ const RecentTransactions = () => {
               <p className={`font-semibold ${
                 transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
               }`}>
-                {transaction.type === 'income' ? '+' : '-'}${transaction.amount.toFixed(2)}
+                {transaction.type === 'income' ? '+' : '-'}${Number(transaction.amount).toFixed(2)}
               </p>
               <div className="flex items-center space-x-2">
                 <span className="text-xs text-gray-500">

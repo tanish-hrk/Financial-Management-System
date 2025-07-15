@@ -145,3 +145,49 @@ export const dashboardService = {
     }
   }
 };
+
+export const transactionService = {
+  async getTransactions() {
+    const res = await fetch(`${API_URL}/transactions`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
+    if (!res.ok) throw new Error('Failed to fetch transactions');
+    return res.json();
+  },
+  async createTransaction(data) {
+    const res = await fetch(`${API_URL}/transactions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to create transaction');
+    return res.json();
+  },
+  async updateTransaction(id, data) {
+    const res = await fetch(`${API_URL}/transactions/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to update transaction');
+    return res.json();
+  },
+  async deleteTransaction(id) {
+    const res = await fetch(`${API_URL}/transactions/${id}`, {
+      method: 'DELETE',
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
+    if (!res.ok) throw new Error('Failed to delete transaction');
+    return res.json();
+  },
+};

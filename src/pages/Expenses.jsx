@@ -3,6 +3,7 @@ import { Plus, Filter, Download, Search, Calendar, Tag, Edit, Trash2, X } from '
 import { motion } from 'framer-motion';
 import { expenseService } from '../services/api.js';
 import toast from 'react-hot-toast';
+import * as XLSX from 'xlsx';
 
 const Expenses = () => {
   const [expenses, setExpenses] = useState([]);
@@ -148,10 +149,14 @@ const Expenses = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-            onClick={() => setShowForm((v) => !v)}
+            onClick={() => {
+              const ws = XLSX.utils.json_to_sheet(filteredExpenses);
+              const wb = XLSX.utils.book_new();
+              XLSX.utils.book_append_sheet(wb, ws, 'Expenses');
+              XLSX.writeFile(wb, 'expenses.xlsx');
+            }}
           >
-            <Download className="h-4 w-4" />
-            <span>Export</span>
+            Export
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.02 }}
