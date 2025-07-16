@@ -12,6 +12,7 @@ import Register from './pages/Register';
 import Transactions from './pages/Transactions';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
+import Profile from './pages/Profile';
 
 const AppContent = () => {
   const { user } = useAuth();
@@ -45,6 +46,7 @@ const AppContent = () => {
             <Route path="transactions" element={<Transactions />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>
       </div>

@@ -1,10 +1,13 @@
 import React from 'react';
 import { Bell, Search, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNotifications } from '../../contexts/AuthContext';
 import { motion } from 'framer-motion';
 
 const Header = () => {
   const { user, signOut } = useAuth();
+  const { notifications, unreadCount, markAllRead } = useNotifications();
+  const [showNotifications, setShowNotifications] = React.useState(false);
 
   return (
     <motion.header 
@@ -29,10 +32,42 @@ const Header = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors"
+            onClick={() => {
+              setShowNotifications((v) => !v);
+              markAllRead();
+            }}
+            aria-label="Show notifications"
           >
             <Bell className="h-5 w-5" />
-            <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 font-bold">
+                {unreadCount}
+              </span>
+            )}
           </motion.button>
+          {showNotifications && (
+            <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-gray-100 z-50 p-4">
+              <h4 className="text-sm font-semibold text-gray-900 mb-2">Notifications</h4>
+              {notifications.length === 0 ? (
+                <div className="text-gray-400 text-sm">No notifications</div>
+              ) : (
+                <ul className="space-y-2">
+                  {notifications.map((alert, i) => (
+                    <li key={i} className="text-yellow-800 text-sm font-medium flex items-center">
+                      <span className="w-2 h-2 rounded-full bg-yellow-400 mr-2"></span>
+                      {alert}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <button
+                className="mt-3 w-full text-xs text-blue-600 hover:underline"
+                onClick={() => setShowNotifications(false)}
+              >
+                Close
+              </button>
+            </div>
+          )}
 
           <div className="flex items-center space-x-3">
             <div className="text-right">

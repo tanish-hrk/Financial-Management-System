@@ -88,3 +88,24 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+// Notification Context
+const NotificationContext = createContext();
+export const useNotifications = () => useContext(NotificationContext);
+
+export const NotificationProvider = ({ children }) => {
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const addNotifications = (alerts) => {
+    setNotifications(alerts);
+    setUnreadCount(alerts.length);
+  };
+  const markAllRead = () => setUnreadCount(0);
+
+  return (
+    <NotificationContext.Provider value={{ notifications, unreadCount, addNotifications, markAllRead }}>
+      {children}
+    </NotificationContext.Provider>
+  );
+};

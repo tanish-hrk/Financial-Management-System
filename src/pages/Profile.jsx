@@ -1,32 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Wallet, 
-  Receipt, 
-  BarChart3, 
-  Settings, 
-  CreditCard,
-  Target,
-  FileText,
-  User
-} from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
-const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Budgets', href: '/budgets', icon: Target },
-  { name: 'Expenses', href: '/expenses', icon: Receipt },
-  { name: 'Transactions', href: '/transactions', icon: CreditCard },
-  { name: 'Reports', href: '/reports', icon: BarChart3 },
-  { name: 'Settings', href: '/settings', icon: Settings },
-];
-
-const Sidebar = () => {
+const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchProfile() {
@@ -43,83 +20,33 @@ const Sidebar = () => {
     fetchProfile();
   }, []);
 
+  if (!profile) {
+    return <div className="flex justify-center items-center h-96 text-gray-400">Loading profile...</div>;
+  }
+
+  const initials = profile.full_name ? profile.full_name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase() : '?';
+  const memberSince = profile.created_at ? new Date(profile.created_at).toLocaleDateString() : '';
+
   return (
-    <motion.aside 
-      initial={{ x: -20, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      className="w-64 bg-white border-r border-gray-200 h-screen sticky top-0 flex flex-col"
-    >
-      <div className="p-6">
-        <div className="flex items-center space-x-3">
-          <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-            <Wallet className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-gray-900">FinanceHub</h2>
-            <p className="text-xs text-gray-500">Manage your finances</p>
-          </div>
-        </div>
-      </div>
-
-      <nav className="flex-1 px-4 space-y-2">
-        {navigation.map((item) => (
-          <NavLink
-            key={item.name}
-            to={item.href}
-            className={({ isActive }) =>
-              `flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isActive
-                  ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-              }`
-            }
+    <div className="flex flex-col items-center justify-center min-h-[80vh] bg-gradient-to-br from-blue-50 to-white py-12 px-4">
+      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md flex flex-col items-center relative">
+        <div className="absolute top-4 right-4">
+          <button
+            className="bg-blue-50 text-blue-700 px-3 py-1 rounded hover:bg-blue-100 border border-blue-100 text-sm font-medium"
+            onClick={() => setShowEdit(true)}
           >
-            {({ isActive }) => (
-              <>
-                <item.icon className={`h-5 w-5 ${isActive ? 'text-blue-700' : 'text-gray-400'}`} />
-                <span>{item.name}</span>
-              </>
-            )}
-          </NavLink>
-        ))}
-      </nav>
-
-      {/* User Profile Card */}
-      <div
-        className="p-4 border-t border-gray-200 flex items-center space-x-3 mt-auto cursor-pointer hover:bg-blue-50 transition"
-        onClick={() => profile && navigate('/profile')}
-        title="View Profile"
-      >
-        {profile ? (
-          <>
-            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-lg">
-              {profile.full_name ? profile.full_name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase() : '?'}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-gray-900 truncate">{profile.full_name}</div>
-              <div className="text-xs text-gray-500 truncate">{profile.email}</div>
-            </div>
-          </>
-        ) : (
-          <div className="text-xs text-gray-400">Not logged in</div>
-        )}
+            Edit Profile
+          </button>
+        </div>
+        <div className="h-24 w-24 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-extrabold text-4xl mb-4 shadow-md">
+          {initials}
+        </div>
+        <div className="text-2xl font-bold text-gray-900 mb-1">{profile.full_name}</div>
+        <div className="text-gray-500 mb-2">{profile.email}</div>
+        <div className="text-xs text-gray-400 mb-4">Member since {memberSince}</div>
       </div>
-      {/* Logout Button */}
-      {profile && (
-        <button
-          className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 border-t border-gray-100 transition"
-          onClick={() => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            navigate('/login');
-            window.location.reload();
-          }}
-        >
-          Logout
-        </button>
-      )}
 
-      {/* Profile Edit Modal */}
+      {/* Edit Modal */}
       {showEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
           <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative">
@@ -237,8 +164,8 @@ const Sidebar = () => {
           </div>
         </div>
       )}
-    </motion.aside>
+    </div>
   );
 };
 
-export default Sidebar;
+export default Profile; 

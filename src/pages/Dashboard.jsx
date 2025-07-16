@@ -8,6 +8,8 @@ import AlertsWidget from '../components/dashboard/AlertsWidget';
 import { dashboardService } from '../services/api.js';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Bell } from 'lucide-react';
+import { useNotifications } from '../contexts/AuthContext';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -17,8 +19,8 @@ const Dashboard = () => {
     { label: 'Monthly Savings Goal', target: 1000, current: 0 },
     { label: 'Spending Limit', target: 2000, current: 0 },
   ]);
-  const [alerts, setAlerts] = useState([]);
-  const navigate = useNavigate();
+  const { notifications, addNotifications } = useNotifications();
+  const [alerts, setAlerts] = useState([]); // keep for local AlertsWidget
 
   useEffect(() => {
     async function fetchStats() {
@@ -36,6 +38,7 @@ const Dashboard = () => {
         if (data.totalSpent > data.totalBudget) newAlerts.push('You are over your total budget!');
         if (data.budgetUtilization > 0.8) newAlerts.push('You have used over 80% of your budget.');
         setAlerts(newAlerts);
+        addNotifications(newAlerts);
         // Show toast for each alert
         newAlerts.forEach(alert => toast.error(alert));
       } catch (err) {
@@ -53,21 +56,63 @@ const Dashboard = () => {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl border border-blue-100 mb-2 shadow-sm relative">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <h1 className="text-3xl font-extrabold text-blue-900 tracking-tight">Dashboard</h1>
           <p className="text-gray-600">Welcome back! Here's your financial overview.</p>
         </div>
-        <div className="text-right">
-          <p className="text-sm text-gray-500">Last updated</p>
-          <p className="text-sm font-medium text-gray-900">
-            {new Date().toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </p>
+        <div className="text-right flex items-center gap-4">
+          <div className="relative">
+            <button
+              className="relative focus:outline-none"
+              onClick={() => {
+                // setShowNotifications((v) => !v); // Removed local state
+                // setUnreadCount(0); // Removed local state
+              }}
+              aria-label="Show notifications"
+            >
+              <Bell className="h-6 w-6 text-blue-700" />
+              {/* {unreadCount > 0 && ( // Removed local state
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 font-bold">
+                  {unreadCount}
+                </span>
+              )} */}
+            </button>
+            {/* {showNotifications && ( // Removed local state
+              <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-gray-100 z-50 p-4">
+                <h4 className="text-sm font-semibold text-gray-900 mb-2">Notifications</h4>
+                {alerts.length === 0 ? (
+                  <div className="text-gray-400 text-sm">No notifications</div>
+                ) : (
+                  <ul className="space-y-2">
+                    {alerts.map((alert, i) => (
+                      <li key={i} className="text-yellow-800 text-sm font-medium flex items-center">
+                        <span className="w-2 h-2 rounded-full bg-yellow-400 mr-2"></span>
+                        {alert}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <button
+                  className="mt-3 w-full text-xs text-blue-600 hover:underline"
+                  onClick={() => setShowNotifications(false)}
+                >
+                  Close
+                </button>
+              </div>
+            )} */}
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">Last updated</p>
+            <p className="text-sm font-medium text-gray-900">
+              {new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </p>
+          </div>
         </div>
       </div>
 
