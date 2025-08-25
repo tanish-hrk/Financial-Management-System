@@ -7,8 +7,9 @@
       "config": { "distDir": "dist" }
     }
   ],
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "https://fmsserver.vercel.app/api/:path*" },
-    { "source": "/(.*)", "destination": "/" }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "https://fmsserver.vercel.app/api/$1" },
+    { "handle": "filesystem" },
+    { "src": "/.*", "dest": "/index.html" }
   ]
 }
