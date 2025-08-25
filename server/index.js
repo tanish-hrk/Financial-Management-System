@@ -10,7 +10,39 @@ const userRoutes = require('./routes/users');
 const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
-app.use(cors());
+
+// CORS configuration: allow specific origins (frontend on Vercel and local dev)
+const allowedOriginsEnv = process.env.CORS_ORIGINS || '';
+const allowedOrigins = allowedOriginsEnv
+	.split(',')
+	.map((s) => s.trim())
+	.filter(Boolean);
+
+const defaultAllowed = [
+	'http://localhost:5173',
+	'https://localhost:5173',
+	// Deployed frontend (adjust or add more as needed)
+	'https://fms-xi.vercel.app',
+];
+
+const corsOptions = {
+	origin: function (origin, callback) {
+		// Allow non-browser or same-origin requests with no origin header
+		if (!origin) return callback(null, true);
+		const list = allowedOrigins.length ? allowedOrigins : defaultAllowed;
+		if (list.includes(origin) || /\.vercel\.app$/.test(origin)) {
+			return callback(null, true);
+		}
+		return callback(new Error('Not allowed by CORS'));
+	},
+	methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization'],
+	credentials: false,
+	optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
