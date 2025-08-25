@@ -77,7 +77,7 @@ const Header = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={signOut}
+              onClick={() => navigate('/profile')}
               className="h-8 w-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
             >
               <User className="h-4 w-4 text-gray-600" />
