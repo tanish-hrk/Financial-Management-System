@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:5000/api';
+// Base API URL from environment (Vite). Falls back to local dev server.
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 function getAuthHeaders() {
   const token = localStorage.getItem('token');

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 
+// Base API URL from environment (Vite) with local fallback
+const BASE_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const Settings = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState(null);
@@ -15,7 +18,7 @@ const Settings = () => {
     async function fetchProfile() {
       setLoading(true);
       try {
-        const res = await fetch('/api/users/me', {
+  const res = await fetch(`${BASE_API_URL}/users/me`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         const data = await res.json();
@@ -35,7 +38,7 @@ const Settings = () => {
     e.preventDefault();
     setSaving(true);
     try {
-      const res = await fetch('/api/users/me', {
+  const res = await fetch(`${BASE_API_URL}/users/me`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +61,7 @@ const Settings = () => {
     e.preventDefault();
     setPwLoading(true);
     try {
-      const res = await fetch('/api/users/me/password', {
+  const res = await fetch(`${BASE_API_URL}/users/me/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

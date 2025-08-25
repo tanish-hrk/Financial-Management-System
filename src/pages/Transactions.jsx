@@ -5,7 +5,9 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import * as XLSX from 'xlsx';
 
-const API_URL = 'http://localhost:5000/api/transactions';
+// Use env-driven base API URL and compose transactions endpoint
+const BASE_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = `${BASE_API_URL}/transactions`;
 
 const defaultForm = {
   title: '',

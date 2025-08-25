@@ -3,6 +3,9 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import toast from 'react-hot-toast';
 import * as XLSX from 'xlsx';
 
+// Base API URL from environment (Vite) with local fallback
+const BASE_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const COLORS = ['#2563eb', '#22c55e', '#f59e42', '#ef4444', '#a21caf', '#eab308', '#0ea5e9'];
 
 const Reports = () => {
@@ -15,7 +18,7 @@ const Reports = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('/api/reports', {
+  const res = await fetch(`${BASE_API_URL}/reports`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         const d = await res.json();

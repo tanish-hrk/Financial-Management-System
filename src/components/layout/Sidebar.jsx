@@ -14,6 +14,9 @@ import {
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
+// Base API URL from environment (Vite) with local fallback
+const BASE_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Budgets', href: '/budgets', icon: Target },
@@ -32,7 +35,7 @@ const Sidebar = () => {
     async function fetchProfile() {
       const token = localStorage.getItem('token');
       if (!token) return;
-      const res = await fetch('/api/users/me', {
+  const res = await fetch(`${BASE_API_URL}/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -137,7 +140,7 @@ const Sidebar = () => {
                 const full_name = form.full_name.value;
                 const email = form.email.value;
                 try {
-                  const res = await fetch('/api/users/me', {
+                  const res = await fetch(`${BASE_API_URL}/users/me`, {
                     method: 'PUT',
                     headers: {
                       'Content-Type': 'application/json',
@@ -190,7 +193,7 @@ const Sidebar = () => {
                 const oldPassword = form.oldPassword.value;
                 const newPassword = form.newPassword.value;
                 try {
-                  const res = await fetch('/api/users/me/password', {
+                  const res = await fetch(`${BASE_API_URL}/users/me/password`, {
                     method: 'PUT',
                     headers: {
                       'Content-Type': 'application/json',

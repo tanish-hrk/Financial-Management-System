@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
-const API_URL = 'https://fmsserver.vercel.app/api';
+// Use Vite environment variable for API base URL with a sensible fallback for local dev
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const AuthContext = createContext(undefined);
 
