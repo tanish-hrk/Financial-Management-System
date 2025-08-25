@@ -115,7 +115,6 @@ const Sidebar = () => {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             navigate('/login', { replace: true });
-            window.location.reload();
           }}
         >
           Logout
