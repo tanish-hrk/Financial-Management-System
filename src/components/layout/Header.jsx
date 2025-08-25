@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Bell, Search, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNotifications } from '../../contexts/AuthContext';
@@ -8,6 +9,7 @@ const Header = () => {
   const { user, signOut } = useAuth();
   const { notifications, unreadCount, markAllRead } = useNotifications();
   const [showNotifications, setShowNotifications] = React.useState(false);
+  const navigate = useNavigate();
 
   return (
     <motion.header 

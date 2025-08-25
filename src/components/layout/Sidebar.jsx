@@ -114,7 +114,7 @@ const Sidebar = () => {
           onClick={() => {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            navigate('/login');
+            navigate('/login', { replace: true });
           }}
         >
           Logout
